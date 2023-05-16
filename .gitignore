@@ -118,3 +118,5 @@ dist
 # PHPStorm
 .idea
 .DS_Store
+
+*.bat

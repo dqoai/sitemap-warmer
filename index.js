@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 import SitemapXMLParser from 'datuan-sitemap-parser'
-import Sitemap from './sitemap.js'
-import Warmer from './warmer.js'
-import utils from './utilities.js'
-import fetch from 'node-fetch'
 import Logger from 'logplease'
+import fetch from 'node-fetch'
 import yargs from 'yargs'
+import Sitemap from './sitemap.js'
+import utils from './utilities.js'
+import Warmer from './warmer.js'
 const argv = yargs(process.argv.slice(2))
     .usage('Usage: $0' + ' domain.com')
     .alias('v', 'version')
@@ -24,6 +24,10 @@ const argv = yargs(process.argv.slice(2))
     .default('js', true)
     .describe('brotli', 'Enable Brotli compress warm up. Default: true')
     .default('brotli', true)
+    .describe('gzip', 'Enable Gzip compress warm up. Default: false')
+    .default('gzip', true)
+    .describe('deflate', 'Enable Deflate compress warm up. Default: false')
+    .default('deflate', true)
     .describe('webp', 'Enable WebP images warm up. Default: true')
     .default('webp', true)
     .describe('avif', 'Enable AVIF images warm up. Default: true')
@@ -37,6 +41,8 @@ const argv = yargs(process.argv.slice(2))
     .default('purge', 0)
     .describe('headers', 'Add custom headers with warmup request. Example --headers.auth \'Bearer secret_token\'')
     .default('headers', {})
+    .describe('origin', 'Replace hostnames with custom origin. Example --origin https://example.com')
+    .default('origin', "")     
     .argv
 
 const logger = Logger.create('main', {
@@ -49,7 +55,7 @@ if (argv.quite) {
 
 const settings = {
     all: argv.all,
-    sitemap: process.argv[2],
+    sitemapURL: process.argv[2],
     domain: null,
     newer_than: parseInt(argv.range) || 300,
     delay: parseInt(argv.delay) || 500,
@@ -57,35 +63,38 @@ const settings = {
     warmup_css: argv.css,
     warmup_js: argv.js,
     warmup_brotli: argv.brotli,
+    warmup_gzip: argv.gzip,
+    warmup_deflate: argv.deflate,
     warmup_webp: argv.webp,
     warmup_avif: argv.avif,
     purge: parseInt(argv.purge) || 0,
     custom_headers: argv.headers,
+    origin: argv.origin
 }
 
-settings.sitemap = utils.tryValidURL(settings.sitemap)
-settings.sitemap = new URL(settings.sitemap)
+settings.sitemapURL = utils.tryValidURL(settings.sitemapURL)
+settings.sitemapURL = new URL(settings.sitemapURL)
 
-if (utils.isValidURL(settings.sitemap) === false) {
-    logger.error(`Please specific an valid URL! Your URL ${settings.sitemap} seems not correct.`)
+if (utils.isValidURL(settings.sitemapURL) === false) {
+    logger.error(`Please specific an valid URL! Your URL ${settings.sitemapURL} seems not correct.`)
     process.exit()
 }
 
-if (settings.sitemap.pathname === '/') {
-    settings.sitemap = new URL('/sitemap.xml', settings.sitemap.href)
+if (settings.sitemapURL.pathname === '/') {
+    settings.sitemapURL = new URL('/sitemap.xml', settings.sitemapURL.href)
 }
 
-settings.domain = `${settings.sitemap.protocol}//${settings.sitemap.hostname}`
+settings.domain = `${settings.sitemapURL.protocol}//${settings.sitemapURL.hostname}`
 
 // Pre-check for issue: https://github.com/tdtgit/sitemap-warmer/issues/4
-fetch(settings.sitemap.href).then((res) => {
+fetch(settings.sitemapURL.href, {headers: settings.custom_headers}).then((res) => {
     if (res.ok === false) {
         throw new Error(res.statusText)
     }
 }).then(() => {
-    logger.info(`📬 Getting sitemap from ${settings.sitemap.href}`)
-
-    const sitemapXMLParser = new SitemapXMLParser(settings.sitemap.href, { delay: 3000 })
+    logger.info(`📬 Getting sitemap from ${settings.sitemapURL.href}`, settings.custom_headers)
+    
+    const sitemapXMLParser = new SitemapXMLParser(settings.sitemapURL.href, { delay: 3000 })
     sitemapXMLParser.fetch().then(urls => {
         let sitemap = new Sitemap(settings)
         urls.forEach(url => {

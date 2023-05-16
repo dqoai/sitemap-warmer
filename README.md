@@ -1,6 +1,9 @@
 # DATUAN Sitemap Warmer
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 A CLI script built to help you warm up the website cache by scanning through the `sitemap.xml`. This utility help to
@@ -8,10 +11,12 @@ warm up website in major encoding like `brotli`, `gzip`, warm up images by vario
 
 ![Plugin screenshot](https://datuan.dev/wp-content/uploads/2020/12/datuan-sitemap-warmer.png)
 
------------------------------------------
+---
+
 Tài liệu Tiếng Việt tại đây - Vietnamese documentation here: https://datuan.dev/backlog/datuan-sitemap-warmer/
 
------------------------------------------
+---
+
 ![master](https://github.com/tdtgit/TDT-sitemap-warmer/workflows/Node.js%20CI/badge.svg) [![npm version](https://badge.fury.io/js/datuan-sitemap-warmer.svg)](https://www.npmjs.com/package/datuan-sitemap-warmer) [![Known Vulnerabilities](https://snyk.io/test/github/tdtgit/sitemap-warmer/badge.svg?targetFile=package.json)](https://snyk.io/test/github/tdtgit/sitemap-warmer?targetFile=package.json)
 
 By default, this utility will warm up any URLs that changed in last 5 minutes (300s) by checking the value
@@ -28,10 +33,12 @@ docker run tdtgit/sitemap-warmer yourdomain.com
 For more options and parameters, please refer to [Options](#options) section.
 
 ## Requirements
+
 (In case you don't have Docker installation)
-* NodeJS 12/14/16+
-* Ubuntu/CentOS/*nix or Windows/MacOS
-* A website has a sitemap.xml endpoint. Example: https://datuan.dev/sitemap.xml. Tested and worked well with
+
+- NodeJS 12/14/16+
+- Ubuntu/CentOS/\*nix or Windows/MacOS
+- A website has a sitemap.xml endpoint. Example: https://datuan.dev/sitemap.xml. Tested and worked well with
   plugins [RankMath SEO](https://rankmath.com/kb/configure-sitemaps/), [Yoast SEO](https://yoast.com/help/xml-sitemaps-in-the-wordpress-seo-plugin/), [Jetpack](https://jetpack.com/).
 
 ## How to use
@@ -81,24 +88,29 @@ Usage:
 warmup datuan.dev <URL> <parameter>
 ```
 
-| Parameter            | Description                                                                                                            | Default            |
-|------------------	|---------------------------------------------------------------------------------------------------------------------	|-----------------	|
-| `-a`, `--all`        | Warm up all URLs in sitemap                                                                                            | False            |
-| `-r`, `--range`    | Only warm up URLs with `lastMod` newer than X seconds.<br> This parameters is ignored if `-a` (`--all`) is provided    | 300s (5 minutes)    |
-| `-d`, `--delay`    | Delay (in milliseconds) between each warm up call.<br> If you using the low-end hosting, keep this value higher        | 500                |
-| `--no-images`    | Disable images warm up                                                                                               | False                |
-| `--no-css`    | Disable CSS warm up                                                                                               | False                |
-| `--no-js`    | Disable Javascript warm up                                                                                               | False                |
-| `--no-brotli`    | Disable Brotli compression warm up                                                                                               | False                |
-| `-q`, `--quite`    | Suppress the debug log                                                                                                | False            |
-| `-h`, `--headers`    | Add custom headers                                                                                                | None            |
+| Parameter         | Description                                                                                                         | Default          |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `-a`, `--all`     | Warm up all URLs in sitemap                                                                                         | False            |
+| `-r`, `--range`   | Only warm up URLs with `lastMod` newer than X seconds.<br> This parameters is ignored if `-a` (`--all`) is provided | 300s (5 minutes) |
+| `-d`, `--delay`   | Delay (in milliseconds) between each warm up call.<br> If you using the low-end hosting, keep this value higher     | 500              |
+| `--no-images`     | Disable images warm up                                                                                              | False            |
+| `--no-css`        | Disable CSS warm up                                                                                                 | False            |
+| `--no-js`         | Disable Javascript warm up                                                                                          | False            |
+| `--no-brotli`     | Disable Brotli compression warm up                                                                                  | False            |
+| `--no-gzip`       | Disable Brotli compression warm up                                                                                  | False            |
+| `--no-deflate`    | Disable Brotli compression warm up                                                                                  | False            |
+| `--origin`        | Replace hostnames with custom origin                                                                                | None             |
+| `-q`, `--quite`   | Suppress the debug log                                                                                              | False            |
+| `-h`, `--headers` | Add custom headers                                                                                                  | None             |
 
 ## Advanced options
+
 ### Custom request headers
 
 ```shell
 warmup datuan.dev --headers.auth "Bearer super_secret" --headers.user-agent "My own crawler"
 ```
+
 ...
 
 ## Contributors ✨

@@ -1,5 +1,5 @@
-import normalize_url from 'normalize-url'
 import url from 'node:url'
+import normalize_url from 'normalize-url'
 
 class Utilities {
     isValidURL(string) {
@@ -64,6 +64,15 @@ class Utilities {
 
         return returnText.trim()
     }
+
+    applyOrigin(location, origin) {
+        let url = new URL(location)
+        if (origin){
+            return new URL(url.pathname, origin)
+        }
+        return url
+    }
+
 }
 
 const utils = new Utilities()
